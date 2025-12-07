@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Apriori Results & Recommendations</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Apriori Results & Product Recommendations</h1>
+
+    <a href="{{ url_for('index') }}"><button>⬅ Back</button></a>
+    <hr>
+
+    {% if frequent_items is not none and not frequent_items.empty %}
+    <h2>🔥 Top Frequent Itemsets</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Items</th>
+          <th>Support</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for _, row in frequent_items.head(10).iterrows() %}
+        <tr>
+          <td>{{ row['itemsets'] }}</td>
+          <td>{{ "%.3f"|format(row['support']) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    {% if rules is not none and not rules.empty %}
+    <h2>⚡ Association Rules</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Antecedents</th>
+          <th>Consequents</th>
+          <th>Support</th>
+          <th>Confidence</th>
+          <th>Lift</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for _, row in rules.iterrows() %}
+        <tr>
+          <td>{{ row['antecedents'] }}</td>
+          <td>{{ row['consequents'] }}</td>
+          <td>{{ "%.3f"|format(row['support']) }}</td>
+          <td>{{ "%.3f"|format(row['confidence']) }}</td>
+          <td>{{ "%.3f"|format(row['lift']) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    {% if image_paths %}
+    <h2>📈 Charts</h2>
+    <div class="chart-gallery">
+      {% for img in image_paths %}
+      <img src="{{ url_for('static', filename=img) }}" alt="Chart" class="chart">
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <hr>
+
+    <h2>🎯 Product Recommendation</h2>
+    <form action="/recommend" method="POST">
+      <input type="text" name="product_name" placeholder="Type product name..." list="top_products" required>
+      <datalist id="top_products">
+        {% if frequent_items is not none and not frequent_items.empty %}
+        {% for _, row in frequent_items.head(10).iterrows() %}
+        {% for item in row['itemsets'] %}
+        <option value="{{ item }}"></option>
+        {% endfor %}
+        {% endfor %}
+        {% endif %}
+      </datalist>
+      <button type="submit">Get Recommendation</button>
+    </form>
+
+    {% if recommended_products %}
+    <div class="recommendations">
+      <h3>🛍 Recommended Products:</h3>
+      <ul>
+        {% for item in recommended_products %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

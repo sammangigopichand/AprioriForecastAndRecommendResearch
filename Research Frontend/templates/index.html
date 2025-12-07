@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hybrid Apriori + Forecast Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f7f8fa;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 50%;
+        }
+        h1 { color: #333; margin-bottom: 20px; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Hybrid Apriori + ML Dashboard</h1>
+        <p>Run Apriori analysis, generate recommendations, and visualize results using <b>online_retail_II.xlsx</b>.</p>
+        <form action="{{ url_for('results') }}" method="get">
+            <button type="submit">Run Apriori Analysis</button>
+        </form>
+    </div>
+</body>
+</html>
